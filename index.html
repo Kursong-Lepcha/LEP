@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher's Attendance Dashboard</title>
+    <style>
+        table { width: 80%; margin: 20px auto; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f2f2f2; }
+        button { padding: 5px 10px; cursor: pointer; background-color: #ff4d4d; color: white; border: none; }
+        button:hover { background-color: #cc0000; }
+    </style>
+</head>
+<body>
+    <h1>Students with Attendance Below 75%</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Attendance (%)</th>
+            <th>Action</th>
+        </tr>
+        {% for student in students %}
+        <tr>
+            <td>{{ student.name }}</td>
+            <td>{{ student.email }}</td>
+            <td>{{ student.percentage | round(2) }}</td>
+            <td><button onclick="sendEmail( student.id )">Send Email</button></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <script>
+        function sendEmail(studentId) {
+            fetch('/send_email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ student_id: studentId })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => alert('Error: ' + error));
+        }
+    </script>
+</body>
+</html>
